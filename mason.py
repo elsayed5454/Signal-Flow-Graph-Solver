@@ -58,13 +58,15 @@ def loops_gain_of_path(g, path, loops):
 
             # Check for 2 non touching loops
             for j in range(i + 1, len(loops)):
-                if len(set(loops[i]) & set(loops[j])) == 0:
+                if (len(set(loops[j]) & set(path)) == 0) and \
+                        (len(set(loops[i]) & set(loops[j])) == 0):
                     gains_2 = get_gains(g, loops[j], "loopGain")
                     loops_gain -= gains_1[0] * gains_2[0]
 
                     # Check for 3 non touching loops
                     for k in range(j + 1, len(loops)):
-                        if (len(set(loops[j]) & set(loops[k])) == 0) and \
+                        if (len(set(loops[k]) & set(path)) == 0) and \
+                                (len(set(loops[j]) & set(loops[k])) == 0) and \
                                 (len(set(loops[i]) & set(loops[k])) == 0):
                             gains_3 = get_gains(g, loops[k], "loopGain")
                             loops_gain += gains_1[0] * gains_2[0] * gains_3
@@ -77,7 +79,7 @@ def mason(nodes, edges):
     g.add_nodes_from(nodes)
     g.add_weighted_edges_from(edges)
 
-    forward_paths = list(nx.all_simple_paths(g, 'R', 'y'))
+    forward_paths = list(nx.all_simple_paths(g, nodes[0], nodes[len(nodes) - 1]))
     forward_paths = remove_duplicates(forward_paths)
     loops = list(nx.simple_cycles(g))
     overall_transfer_fn = 0
@@ -98,27 +100,38 @@ def mason(nodes, edges):
 
     dummy_set = set()
     det_of_sys = 1 - loops_gain_of_path(g, dummy_set, loops)
+    print(f"Det of sys: {det_of_sys}")
 
     print(overall_transfer_fn / det_of_sys)
 
 
 def test():
-    print("Test 1:\n")
+    print("Test 1:")
     nodes = ['R', '1', '2', '3', '4', 'C']
     edges = [('R', '1', 1), ('1', '2', sym.Symbol("G1G4")),
              ('2', '3', sym.Symbol("G2")), ('2', '3', sym.Symbol("G3")),
              ('3', '4', 1), ('4', 'C', 1), ('2', '1', sym.Symbol("H1")),
              ('4', '1', -sym.Symbol("H2"))]
     mason(nodes, edges)
+    print()
 
-    print("Test 2: \n")
-    nodes = ['R', '1', '2', '3', '4', '5', '6' 'y']
+    print("Test 2: ")
+    nodes = ['R', '1', '2', '3', '4', '5', '6', 'y']
     edges = [('R', '1', sym.Symbol("G1")), ('1', '2', sym.Symbol("G2")),
              ('2', '3', sym.Symbol("G3")), ('3', 'y', sym.Symbol("G4")),
              ('R', '4', sym.Symbol("G5")), ('4', '5', sym.Symbol("G6")),
              ('5', '6', sym.Symbol("G7")), ('6', 'y', sym.Symbol("G8")),
              ('2', '1', sym.Symbol("H2")), ('3', '2', sym.Symbol("H3")),
              ('5', '4', sym.Symbol("H6")), ('6', '5', sym.Symbol("H7"))]
+    mason(nodes, edges)
+    print()
+
+    print("Test 3: ")
+    nodes = ['R', '1', '2', '3', '4', 'C']
+    edges = [('R', '1', 1), ('1', '2', sym.Symbol("G1")),
+             ('2', '3', sym.Symbol("G2")), ('3', '4', sym.Symbol("G3")),
+             ('4', 'C', sym.Symbol("G4")), ('C', '1', -sym.Symbol("H3")),
+             ('4', '2', -sym.Symbol("H2")), ('C', '3', -sym.Symbol("H1"))]
     mason(nodes, edges)
 
 
