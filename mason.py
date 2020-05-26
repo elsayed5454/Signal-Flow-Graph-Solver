@@ -4,8 +4,6 @@ import networkx as nx
 import sympy as sym
 
 
-overall_transfer_fn = 0
-
 def permute(weights):
     return list(itertools.product(*weights))
 
@@ -26,7 +24,7 @@ def remove_duplicates(paths):
     return paths
 
 
-def get_gain(g, path, mode):
+def get_gains(g, path, mode):
     weights = []
     # print(f"Path : {path}")
     length = len(path) - 1
@@ -49,6 +47,17 @@ def get_gain(g, path, mode):
     return multiply(weights)
 
 
+def loops_gain_of_path(g, path, loops):
+    loops_gain = 0
+    for loop in loops:
+        # Check if the intersection between loop nodes and path nodes is empty
+        if len(set(loop) & set(path)) == 0:
+            gains = get_gains(g, loop, "loopGain")
+            for gain in gains:
+                loops_gain += gain
+    return loops_gain
+
+
 def mason(nodes, edges):
     # Get forward paths
     g = nx.MultiDiGraph()
@@ -57,20 +66,27 @@ def mason(nodes, edges):
 
     forward_paths = list(nx.all_simple_paths(g, 'R', 'C'))
     forward_paths = remove_duplicates(forward_paths)
-
-    forward_paths_gains = []
-    for p in forward_paths:
-        forward_paths_gains.append(get_gain(g, p, "forwardPath"))
-    print(forward_paths_gains)
-
-    det_of_sys = 1
     loops = list(nx.simple_cycles(g))
-    for loop in loops:
-        print(loop)
-        for gain in get_gain(g, loop, "loopGain"):
-            print(f"Gain: {gain}")
-            det_of_sys -= gain
-    print(det_of_sys)
+    overall_transfer_fn = 0
+
+    for path in forward_paths:
+        print(f"Path: {path}")
+
+        fwd_gains = get_gains(g, path, "forwardPath")
+        print(f"its fwd gains: {fwd_gains}")
+
+        loops_gain = loops_gain_of_path(g, path, loops)
+        path_det = 1 - loops_gain
+        print(f"its path_det: {path_det}")
+
+        for x in fwd_gains:
+            overall_transfer_fn += x * path_det
+            print(overall_transfer_fn)
+
+    dummy_set = set()
+    det_of_sys = 1 - loops_gain_of_path(g, dummy_set, loops)
+
+    print(overall_transfer_fn / det_of_sys)
 
 
 nodes = ['R', '1', '2', '3', '4', 'C']
