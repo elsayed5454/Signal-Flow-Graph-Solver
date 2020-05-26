@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Signal-Flow-Graph-Solver.iml" filepath="$PROJECT_DIR$/.idea/Signal-Flow-Graph-Solver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../SignalFlowGraph-GainSolver/.idea/SignalFlowGraph-GainSolver.iml" filepath="$PROJECT_DIR$/../SignalFlowGraph-GainSolver/.idea/SignalFlowGraph-GainSolver.iml" />
+    </modules>
+  </component>
+</project>
