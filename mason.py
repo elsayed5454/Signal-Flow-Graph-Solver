@@ -73,12 +73,8 @@ def loops_gain_of_path(g, path, loops):
     return loops_gain
 
 
-def mason(nodes, edges):
+def mason(g, nodes, edges):
     # Get forward paths
-    g = nx.MultiDiGraph()
-    g.add_nodes_from(nodes)
-    g.add_weighted_edges_from(edges)
-
     forward_paths = list(nx.all_simple_paths(g, nodes[0], nodes[len(nodes) - 1]))
     forward_paths = remove_duplicates(forward_paths)
     loops = list(nx.simple_cycles(g))
@@ -112,7 +108,11 @@ def test():
              ('2', '3', sym.Symbol("G2")), ('2', '3', sym.Symbol("G3")),
              ('3', '4', 1), ('4', 'C', 1), ('2', '1', sym.Symbol("H1")),
              ('4', '1', -sym.Symbol("H2"))]
-    mason(nodes, edges)
+
+    g = nx.MultiDiGraph()
+    g.add_nodes_from(nodes)
+    g.add_weighted_edges_from(edges)
+    mason(g, nodes, edges)
     print()
 
     print("Test 2: ")
@@ -123,7 +123,11 @@ def test():
              ('5', '6', sym.Symbol("G7")), ('6', 'y', sym.Symbol("G8")),
              ('2', '1', sym.Symbol("H2")), ('3', '2', sym.Symbol("H3")),
              ('5', '4', sym.Symbol("H6")), ('6', '5', sym.Symbol("H7"))]
-    mason(nodes, edges)
+
+    g = nx.MultiDiGraph()
+    g.add_nodes_from(nodes)
+    g.add_weighted_edges_from(edges)
+    mason(g, nodes, edges)
     print()
 
     print("Test 3: ")
@@ -132,7 +136,11 @@ def test():
              ('2', '3', sym.Symbol("G2")), ('3', '4', sym.Symbol("G3")),
              ('4', 'C', sym.Symbol("G4")), ('C', '1', -sym.Symbol("H3")),
              ('4', '2', -sym.Symbol("H2")), ('C', '3', -sym.Symbol("H1"))]
-    mason(nodes, edges)
+
+    g = nx.MultiDiGraph()
+    g.add_nodes_from(nodes)
+    g.add_weighted_edges_from(edges)
+    mason(g, nodes, edges)
 
 
 test()
