@@ -379,7 +379,7 @@ class Ui_MainWindow(object):
     def add_node_clicked(self):
         txt = ct.add_node(self.g, self.add_node_t.text())
         txt = self.helper_t.toPlainText() + "\n" + txt
-        print(G.nodes)
+        #print(G.nodes)
         self.helper_t.setText(txt)
         self.add_node_t.clear()
         ct.refresh(self.g)
@@ -387,7 +387,7 @@ class Ui_MainWindow(object):
     def remove_node_clicked(self):
         txt = ct.remove_node(self.g, self.remove_node_t.text())
         txt = self.helper_t.toPlainText() + "\n" + txt
-        print(G.nodes)
+        #print(G.nodes)
         self.helper_t.setText(txt)
         self.remove_node_t.clear()
         ct.refresh(self.g)
@@ -395,7 +395,7 @@ class Ui_MainWindow(object):
     def add_edge_clicked(self):
         txt = ct.add_edge(self.g, self.add_edge_t1.text(), self.add_edge_t2.text(), self.add_edge_t3.text())
         txt = self.helper_t.toPlainText() + "\n" + txt
-        print(G.edges(data=True))
+        #print(G.edges(data=True))
         self.helper_t.setText(txt)
         self.add_edge_t1.clear()
         self.add_edge_t2.clear()
@@ -405,7 +405,7 @@ class Ui_MainWindow(object):
     def remove_edge_clicked(self):
         txt = ct.remove_edge(self.g, self.remove_edge_t1.text(), self.remove_edge_t2.text(), self.remove_edge_t3.text())
         txt = self.helper_t.toPlainText() + "\n" + txt
-        print(G.edges)
+        #print(G.edges)
         self.helper_t.setText(txt)
         self.remove_edge_t1.clear()
         self.remove_edge_t2.clear()

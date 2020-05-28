@@ -142,11 +142,3 @@ def test():
     g.add_nodes_from(nodes)
     g.add_weighted_edges_from(edges)
     mason(g, nodes[0], nodes[len(nodes) - 1])
-
-nodes = ['R', '1', 'C']
-edges = [('R', '1', 1), ('1', 'C', 2), ('C', '1', 3)]
-
-g = nx.MultiDiGraph()
-g.add_nodes_from(nodes)
-g.add_weighted_edges_from(edges)
-print(mason(g, nodes[0], nodes[len(nodes) - 1]))
