@@ -73,32 +73,33 @@ def loops_gain_of_path(g, path, loops):
     return loops_gain
 
 
-def mason(g, nodes, edges):
+def mason(g, source, sink):
     # Get forward paths
-    forward_paths = list(nx.all_simple_paths(g, nodes[0], nodes[len(nodes) - 1]))
+    forward_paths = list(nx.all_simple_paths(g, source, sink))
     forward_paths = remove_duplicates(forward_paths)
     loops = list(nx.simple_cycles(g))
     overall_transfer_fn = 0
 
+    txt = ""
     for path in forward_paths:
-        print(f"Path: {path}")
+        txt += f"Path: {path}\n"
 
         fwd_gains = get_gains(g, path, "forwardPath")
-        print(f"its fwd gains: {fwd_gains}")
+        txt += f"its forward gain: {fwd_gains}\n"
 
         loops_gain = loops_gain_of_path(g, path, loops)
         path_det = 1 - loops_gain
-        print(f"its path_det: {path_det}")
+        txt += f"its determinant: {path_det}\n"
 
         for x in fwd_gains:
             overall_transfer_fn += x * path_det
-            print(overall_transfer_fn)
 
     dummy_set = set()
     det_of_sys = 1 - loops_gain_of_path(g, dummy_set, loops)
-    print(f"Det of sys: {det_of_sys}")
+    txt += f"Det of the system: {det_of_sys}\n"
 
-    print(overall_transfer_fn / det_of_sys)
+    txt += f"The overall transfer function: {overall_transfer_fn / det_of_sys}\n"
+    return txt
 
 
 def test():
@@ -112,7 +113,7 @@ def test():
     g = nx.MultiDiGraph()
     g.add_nodes_from(nodes)
     g.add_weighted_edges_from(edges)
-    mason(g, nodes, edges)
+    mason(g, nodes[0], nodes[len(nodes) - 1])
     print()
 
     print("Test 2: ")
@@ -127,7 +128,7 @@ def test():
     g = nx.MultiDiGraph()
     g.add_nodes_from(nodes)
     g.add_weighted_edges_from(edges)
-    mason(g, nodes, edges)
+    mason(g, nodes[0], nodes[len(nodes) - 1])
     print()
 
     print("Test 3: ")
@@ -140,7 +141,12 @@ def test():
     g = nx.MultiDiGraph()
     g.add_nodes_from(nodes)
     g.add_weighted_edges_from(edges)
-    mason(g, nodes, edges)
+    mason(g, nodes[0], nodes[len(nodes) - 1])
 
+nodes = ['R', '1', 'C']
+edges = [('R', '1', 1), ('1', 'C', 2), ('C', '1', 3)]
 
-test()
+g = nx.MultiDiGraph()
+g.add_nodes_from(nodes)
+g.add_weighted_edges_from(edges)
+print(mason(g, nodes[0], nodes[len(nodes) - 1]))

@@ -1,5 +1,7 @@
 import networkx as nx
-from matplotlib.pyplot import draw, show, ion, clf
+from matplotlib.pyplot import draw, show, clf
+
+from mason import mason
 
 
 def add_node(g, node):
@@ -35,7 +37,7 @@ def remove_edge(g, from_node, to_node, weight):
         if len(g.get_edge_data(from_node, to_node)) == 0:
             return "No edge exists"
         elif len(g.get_edge_data(from_node, to_node)) == 1:
-            g.remove_edge(from_node, to_node)
+            g.remove_edge_clicked(from_node, to_node)
             return "Edge removed successfully (Weight is neglected because it's the only edge between the nodes)"
         else:
             if len(weight) == 0:
@@ -60,3 +62,18 @@ def refresh(g):
     nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, label_pos=0.3)
     draw()
     show()
+
+
+def solve(g, source, sink):
+    nodes = list(g.nodes)
+    if len(nodes) == 0:
+        return "The graph is empty"
+    if len(source) == 0:
+        source = nodes[0]
+    if len(sink) == 0:
+        sink = nodes[len(nodes) - 1]
+
+    if g.has_node(source) and g.has_node(sink):
+        return mason(g, source, sink)
+    else:
+        return "One of the nodes is not in the graph"
