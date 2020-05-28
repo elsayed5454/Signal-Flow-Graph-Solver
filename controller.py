@@ -1,3 +1,7 @@
+import networkx as nx
+from matplotlib.pyplot import draw, show, ion, clf
+
+
 def add_node(g, node):
     if node == "":
         return "Add name to the node"
@@ -32,9 +36,27 @@ def remove_edge(g, from_node, to_node, weight):
             return "No edge exists"
         elif len(g.get_edge_data(from_node, to_node)) == 1:
             g.remove_edge(from_node, to_node)
-            return "Edge removed successfully"
+            return "Edge removed successfully (Weight is neglected because it's the only edge between the nodes)"
         else:
-            g.remove_edge(from_node, to_node, key=weight)
+            if len(weight) == 0:
+                return "There are multiple edges, specify the weight"
+            try:
+                to_remove = [(u, v, k) for u, v, k in g.edges(data=True) if k['weight'] == int(weight)]
+                g.remove_edges_from(to_remove)
+            except:
+                return "An exception occurred"
             return "Edge removed successfully"
     else:
         return "One of the nodes is not in the graph"
+
+
+def refresh(g):
+    clf()
+    pos = nx.spring_layout(g)
+    nx.draw(g, pos, with_labels=True, connectionstyle='arc3, rad=0.1')
+    labels = {}
+    for u, v, data in g.edges(data=True):
+        labels[(u, v)] = data['weight']
+    nx.draw_networkx_edge_labels(g, pos, edge_labels=labels, label_pos=0.3)
+    draw()
+    show()
