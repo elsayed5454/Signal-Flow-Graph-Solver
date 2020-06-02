@@ -61,7 +61,7 @@ for k in np.linspace(-3000, 30000000, 500):
     chs_eqn[len(chs_eqn) - 1] -= k
 
 plt.plot([-20], [0], "bo", linewidth=0.1, label="Root locus")
-degree = str(round(departure_angle, 4)) + '°'
+degree = str(round(departure_angle, 2)) + '°'
 plt.text(-50, 12, degree, fontsize=10)
 plt.text(-50, -17, degree, fontsize=10)
 
